@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="TechExercise.Tests/TechExercise.Tests.csproj" />
+  <Project Path="TechExercise.WebApi/TechExercise.WebApi.csproj" />
+</Solution>

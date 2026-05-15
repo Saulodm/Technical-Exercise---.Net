@@ -26,3 +26,111 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# =========================
+# Build folders
+# =========================
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# =========================
+# User-specific files
+# =========================
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# =========================
+# Visual Studio
+# =========================
+.vs/
+.vscode/
+
+# =========================
+# NuGet
+# =========================
+packages/
+*.nupkg
+.nuget/
+
+# Keep packages.config if needed
+!packages/build/
+
+# =========================
+# ASP.NET / IIS
+# =========================
+publish/
+app.publish/
+*.Publish.xml
+*.pubxml
+*.pubxml.user
+
+# IIS Express
+/.vs/config/
+
+# =========================
+# Entity Framework
+# =========================
+*.mdf
+*.ldf
+
+# =========================
+# Logs and temp files
+# =========================
+*.log
+*.tmp
+*.temp
+
+# =========================
+# OS generated files
+# =========================
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# =========================
+# Node modules (if frontend exists)
+# =========================
+node_modules/
+
+# =========================
+# Environment files
+# =========================
+.env
+.env.*
+
+# =========================
+# Test results
+# =========================
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# =========================
+# Resharper / Rider
+# =========================
+_ReSharper*/
+*.DotSettings.user
+
+# JetBrains Rider
+.idea/
+
+# =========================
+# Azure / deployment
+# =========================
+*.azurePubxml
+
+# =========================
+# SQLite databases
+# =========================
+*.db
+*.sqlite
+
+# =========================
+# Generated files
+# =========================
+Generated/
