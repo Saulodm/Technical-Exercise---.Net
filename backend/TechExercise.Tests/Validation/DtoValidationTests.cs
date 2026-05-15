@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using FluentAssertions;
-using TechExercise.WebApi.DTOs.Auth;
-using TechExercise.WebApi.DTOs.Tasks;
+using TechExercise.Application.DTOs.Auth;
+using TechExercise.Application.DTOs.Tasks;
 
 namespace TechExercise.Tests.Validation;
 

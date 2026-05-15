@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.Json;
-using TechExercise.WebApi.Exceptions;
+using TechExercise.Application.Exceptions;
 
 namespace TechExercise.WebApi.Middleware;
 

@@ -1,8 +1,8 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using TechExercise.WebApi.DTOs.Tasks;
-using TechExercise.WebApi.Services;
+using TechExercise.Application.DTOs.Tasks;
+using TechExercise.Application.Interfaces;
 
 namespace TechExercise.WebApi.Controllers;
 

@@ -1,10 +1,10 @@
 using Moq;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using TechExercise.WebApi.DTOs.Tasks;
-using TechExercise.WebApi.Models;
-using TechExercise.WebApi.Repositories;
-using TechExercise.WebApi.Services;
+using TechExercise.Application.DTOs.Tasks;
+using TechExercise.Application.Interfaces;
+using TechExercise.Application.Services;
+using TechExercise.Domain.Entities;
 
 namespace TechExercise.Tests.Services;
 

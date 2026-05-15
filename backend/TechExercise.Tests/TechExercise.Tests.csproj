@@ -23,6 +23,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TechExercise.WebApi\TechExercise.WebApi.csproj" />
+    <ProjectReference Include="..\TechExercise.Domain\TechExercise.Domain.csproj" />
+    <ProjectReference Include="..\TechExercise.Application\TechExercise.Application.csproj" />
+    <ProjectReference Include="..\TechExercise.Infrastructure\TechExercise.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

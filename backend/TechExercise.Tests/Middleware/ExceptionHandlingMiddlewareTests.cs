@@ -5,7 +5,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
-using TechExercise.WebApi.Exceptions;
+using TechExercise.Application.Exceptions;
 using TechExercise.WebApi.Middleware;
 
 namespace TechExercise.Tests.Middleware;

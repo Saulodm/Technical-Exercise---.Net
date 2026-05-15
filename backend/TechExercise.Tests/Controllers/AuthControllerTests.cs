@@ -2,8 +2,8 @@ using Moq;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using TechExercise.WebApi.Controllers;
-using TechExercise.WebApi.DTOs.Auth;
-using TechExercise.WebApi.Services;
+using TechExercise.Application.DTOs.Auth;
+using TechExercise.Application.Interfaces;
 
 namespace TechExercise.Tests.Controllers;
 

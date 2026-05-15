@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using TechExercise.WebApi.Auth;
-using TechExercise.WebApi.Data;
+using TechExercise.Application.Interfaces;
+using TechExercise.Application.Services;
+using TechExercise.Infrastructure.Auth;
+using TechExercise.Infrastructure.Data;
+using TechExercise.Infrastructure.Repositories;
 using TechExercise.WebApi.Middleware;
-using TechExercise.WebApi.Repositories;
-using TechExercise.WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,7 @@ builder.Services.AddSingleton<IDbConnectionFactory>(new DbConnectionFactory(conn
 
 // Auth
 builder.Services.AddSingleton<IJwtService, JwtService>();
+builder.Services.AddSingleton<IPasswordHasher, BCryptPasswordHasher>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

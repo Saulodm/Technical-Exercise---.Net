@@ -1,4 +1,7 @@
 <Solution>
-  <Project Path="TechExercise.Tests/TechExercise.Tests.csproj" />
+  <Project Path="TechExercise.Domain/TechExercise.Domain.csproj" />
+  <Project Path="TechExercise.Application/TechExercise.Application.csproj" />
+  <Project Path="TechExercise.Infrastructure/TechExercise.Infrastructure.csproj" />
   <Project Path="TechExercise.WebApi/TechExercise.WebApi.csproj" />
+  <Project Path="TechExercise.Tests/TechExercise.Tests.csproj" />
 </Solution>

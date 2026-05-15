@@ -1,5 +1,5 @@
 using Npgsql;
-using TechExercise.WebApi.Data;
+using TechExercise.Infrastructure.Data;
 using Testcontainers.PostgreSql;
 
 namespace TechExercise.Tests.Repositories;

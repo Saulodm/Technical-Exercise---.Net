@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechExercise.WebApi.Controllers;
-using TechExercise.WebApi.DTOs.Tasks;
-using TechExercise.WebApi.Services;
+using TechExercise.Application.DTOs.Tasks;
+using TechExercise.Application.Interfaces;
 
 namespace TechExercise.Tests.Controllers;
 

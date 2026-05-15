@@ -1,7 +1,7 @@
 using FluentAssertions;
-using TechExercise.WebApi.Data;
-using TechExercise.WebApi.Models;
-using TechExercise.WebApi.Repositories;
+using TechExercise.Domain.Entities;
+using TechExercise.Infrastructure.Data;
+using TechExercise.Infrastructure.Repositories;
 
 namespace TechExercise.Tests.Repositories;
 

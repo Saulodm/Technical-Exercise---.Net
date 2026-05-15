@@ -2,12 +2,11 @@ using System.ComponentModel.DataAnnotations;
 using Moq;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using TechExercise.WebApi.Auth;
-using TechExercise.WebApi.DTOs.Auth;
-using TechExercise.WebApi.Exceptions;
-using TechExercise.WebApi.Models;
-using TechExercise.WebApi.Repositories;
-using TechExercise.WebApi.Services;
+using TechExercise.Application.DTOs.Auth;
+using TechExercise.Application.Exceptions;
+using TechExercise.Application.Interfaces;
+using TechExercise.Application.Services;
+using TechExercise.Domain.Entities;
 
 namespace TechExercise.Tests.Services;
 
@@ -15,6 +14,7 @@ public class AuthServiceTests
 {
     private readonly Mock<IUserRepository> _userRepoMock;
     private readonly Mock<IJwtService> _jwtServiceMock;
+    private readonly Mock<IPasswordHasher> _passwordHasherMock;
     private readonly Mock<ILogger<AuthService>> _loggerMock;
     private readonly AuthService _sut;
 
@@ -22,8 +22,9 @@ public class AuthServiceTests
     {
         _userRepoMock = new Mock<IUserRepository>();
         _jwtServiceMock = new Mock<IJwtService>();
+        _passwordHasherMock = new Mock<IPasswordHasher>();
         _loggerMock = new Mock<ILogger<AuthService>>();
-        _sut = new AuthService(_userRepoMock.Object, _jwtServiceMock.Object, _loggerMock.Object);
+        _sut = new AuthService(_userRepoMock.Object, _jwtServiceMock.Object, _passwordHasherMock.Object, _loggerMock.Object);
     }
 
     [Fact]
@@ -40,6 +41,7 @@ public class AuthServiceTests
         _userRepoMock.Setup(x => x.GetByEmailAsync(request.Email)).ReturnsAsync((User?)null);
         _userRepoMock.Setup(x => x.CreateAsync(It.IsAny<User>())).ReturnsAsync(1);
         _jwtServiceMock.Setup(x => x.GenerateToken(It.IsAny<User>())).Returns("jwt-token");
+        _passwordHasherMock.Setup(x => x.Hash(request.Password)).Returns("hashed-password");
 
         // Act
         var result = await _sut.RegisterAsync(request);
@@ -142,6 +144,7 @@ public class AuthServiceTests
 
         _userRepoMock.Setup(x => x.GetByEmailAsync(request.Email)).ReturnsAsync(user);
         _jwtServiceMock.Setup(x => x.GenerateToken(user)).Returns("jwt-token");
+        _passwordHasherMock.Setup(x => x.Verify("password123", user.PasswordHash)).Returns(true);
 
         // Act
         var result = await _sut.LoginAsync(request);
