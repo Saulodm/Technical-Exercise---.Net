@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found");
-builder.Services.AddSingleton(new DbConnectionFactory(connectionString));
+builder.Services.AddSingleton<IDbConnectionFactory>(new DbConnectionFactory(connectionString));
 
 // Auth
 builder.Services.AddSingleton<IJwtService, JwtService>();

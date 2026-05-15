@@ -1,5 +1,7 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.Json;
+using TechExercise.WebApi.Exceptions;
 
 namespace TechExercise.WebApi.Middleware;
 
@@ -20,18 +22,26 @@ public class ExceptionHandlingMiddleware
         {
             await _next(context);
         }
-        catch (UnauthorizedAccessException ex)
+        catch (ValidationException ex)
         {
-            _logger.LogWarning(ex, "Authorization failed");
-            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+            _logger.LogWarning(ex, "Validation failed");
+            context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
             context.Response.ContentType = "application/json";
             var response = new { error = ex.Message };
             await context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
-        catch (InvalidOperationException ex)
+        catch (ConflictException ex)
         {
-            _logger.LogWarning(ex, "Invalid operation");
+            _logger.LogWarning(ex, "Conflict");
             context.Response.StatusCode = (int)HttpStatusCode.Conflict;
+            context.Response.ContentType = "application/json";
+            var response = new { error = ex.Message };
+            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            _logger.LogWarning(ex, "Authorization failed");
+            context.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
             context.Response.ContentType = "application/json";
             var response = new { error = ex.Message };
             await context.Response.WriteAsync(JsonSerializer.Serialize(response));

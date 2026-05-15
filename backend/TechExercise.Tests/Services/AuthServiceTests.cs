@@ -4,6 +4,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using TechExercise.WebApi.Auth;
 using TechExercise.WebApi.DTOs.Auth;
+using TechExercise.WebApi.Exceptions;
 using TechExercise.WebApi.Models;
 using TechExercise.WebApi.Repositories;
 using TechExercise.WebApi.Services;
@@ -117,7 +118,7 @@ public class AuthServiceTests
         var act = () => _sut.RegisterAsync(request);
 
         // Assert
-        await act.Should().ThrowAsync<ValidationException>()
+        await act.Should().ThrowAsync<ConflictException>()
             .WithMessage("Email already registered.");
     }
 

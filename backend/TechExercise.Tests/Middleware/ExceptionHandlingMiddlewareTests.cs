@@ -1,9 +1,11 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Text.Json;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
+using TechExercise.WebApi.Exceptions;
 using TechExercise.WebApi.Middleware;
 
 namespace TechExercise.Tests.Middleware;
@@ -43,12 +45,37 @@ public class ExceptionHandlingMiddlewareTests
     }
 
     [Fact]
-    public async Task InvokeAsync_ShouldReturn409_WhenInvalidOperationException()
+    public async Task InvokeAsync_ShouldReturn400_WhenValidationException()
     {
         // Arrange
         var loggerMock = new Mock<ILogger<ExceptionHandlingMiddleware>>();
         var middleware = new ExceptionHandlingMiddleware(
-            _ => throw new InvalidOperationException("Resource already exists"),
+            _ => throw new ValidationException("Title is required"),
+            loggerMock.Object
+        );
+
+        var context = new DefaultHttpContext();
+        context.Response.Body = new MemoryStream();
+
+        // Act
+        await middleware.InvokeAsync(context);
+
+        // Assert
+        context.Response.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        context.Response.ContentType.Should().Be("application/json");
+
+        var body = await ReadBodyAsync(context);
+        var json = JsonSerializer.Deserialize<JsonElement>(body);
+        json.GetProperty("error").GetString().Should().Be("Title is required");
+    }
+
+    [Fact]
+    public async Task InvokeAsync_ShouldReturn409_WhenConflictException()
+    {
+        // Arrange
+        var loggerMock = new Mock<ILogger<ExceptionHandlingMiddleware>>();
+        var middleware = new ExceptionHandlingMiddleware(
+            _ => throw new ConflictException("Resource already exists"),
             loggerMock.Object
         );
 

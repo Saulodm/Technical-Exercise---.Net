@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using TechExercise.WebApi.Auth;
 using TechExercise.WebApi.DTOs.Auth;
+using TechExercise.WebApi.Exceptions;
 using TechExercise.WebApi.Models;
 using TechExercise.WebApi.Repositories;
 
@@ -29,7 +30,7 @@ public class AuthService : IAuthService
 
         var existing = await _userRepository.GetByEmailAsync(request.Email);
         if (existing != null)
-            throw new ValidationException("Email already registered.");
+            throw new ConflictException("Email already registered.");
 
         var user = new User
         {

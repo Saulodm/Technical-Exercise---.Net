@@ -301,7 +301,7 @@ public class TaskRepositoryTests : IClassFixture<DatabaseFixture>
         });
 
         // Act
-        var result = await _repo.DeleteAsync(id);
+        var result = await _repo.DeleteAsync(id, userId);
         var deleted = await _repo.GetByIdAsync(id);
 
         // Assert
@@ -314,16 +314,17 @@ public class TaskRepositoryTests : IClassFixture<DatabaseFixture>
     {
         // Arrange
         await _fixture.ResetTablesAsync();
+        var userId = await SeedUserAsync();
 
         // Act
-        var result = await _repo.DeleteAsync(9999);
+        var result = await _repo.DeleteAsync(9999, userId);
 
         // Assert
         result.Should().BeFalse();
     }
 
     [Fact]
-    public async Task DeleteAsync_ShouldNotDeleteTasksOfOtherUsers()
+    public async Task DeleteAsync_ShouldNotDeleteWithWrongUserId()
     {
         // Arrange
         await _fixture.ResetTablesAsync();
@@ -336,13 +337,14 @@ public class TaskRepositoryTests : IClassFixture<DatabaseFixture>
             UserId = userId
         });
 
-        // Act - try to delete with a different id
-        var result = await _repo.DeleteAsync(id);
+        // Act - try to delete with a different user id
+        var result = await _repo.DeleteAsync(id, userId + 9999);
 
         // Assert
-        result.Should().BeTrue(); // Delete only checks id, not ownership
+        result.Should().BeFalse();
 
         var remaining = await _repo.GetByIdAsync(id);
-        remaining.Should().BeNull();
+        remaining.Should().NotBeNull();
+        remaining!.Title.Should().Be("Protected Task");
     }
 }

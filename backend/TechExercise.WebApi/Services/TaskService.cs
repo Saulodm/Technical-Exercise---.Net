@@ -71,7 +71,7 @@ public class TaskService : ITaskService
         if (task == null || task.UserId != userId)
             return false;
 
-        var deleted = await _taskRepository.DeleteAsync(id);
+        var deleted = await _taskRepository.DeleteAsync(id, userId);
         if (deleted)
             _logger.LogInformation("Task {TaskId} deleted by user {UserId}", id, userId);
 

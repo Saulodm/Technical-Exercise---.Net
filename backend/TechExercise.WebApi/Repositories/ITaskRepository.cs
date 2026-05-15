@@ -8,5 +8,5 @@ public interface ITaskRepository
     Task<IEnumerable<TaskItem>> GetByUserIdAsync(int userId);
     Task<int> CreateAsync(TaskItem task);
     Task<bool> UpdateAsync(TaskItem task);
-    Task<bool> DeleteAsync(int id);
+    Task<bool> DeleteAsync(int id, int userId);
 }

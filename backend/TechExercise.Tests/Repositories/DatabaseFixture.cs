@@ -21,7 +21,7 @@ public class DatabaseFixture : IAsyncLifetime
 
     public string ConnectionString => _container.GetConnectionString();
 
-    public DbConnectionFactory ConnectionFactory => new(ConnectionString);
+    public IDbConnectionFactory ConnectionFactory => new DbConnectionFactory(ConnectionString);
 
     public async Task InitializeAsync()
     {

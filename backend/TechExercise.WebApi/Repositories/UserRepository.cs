@@ -5,9 +5,9 @@ namespace TechExercise.WebApi.Repositories;
 
 public class UserRepository : IUserRepository
 {
-    private readonly DbConnectionFactory _connectionFactory;
+    private readonly IDbConnectionFactory _connectionFactory;
 
-    public UserRepository(DbConnectionFactory connectionFactory)
+    public UserRepository(IDbConnectionFactory connectionFactory)
     {
         _connectionFactory = connectionFactory;
     }

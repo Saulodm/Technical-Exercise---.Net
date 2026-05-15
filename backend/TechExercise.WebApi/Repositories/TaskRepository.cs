@@ -5,9 +5,9 @@ namespace TechExercise.WebApi.Repositories;
 
 public class TaskRepository : ITaskRepository
 {
-    private readonly DbConnectionFactory _connectionFactory;
+    private readonly IDbConnectionFactory _connectionFactory;
 
-    public TaskRepository(DbConnectionFactory connectionFactory)
+    public TaskRepository(IDbConnectionFactory connectionFactory)
     {
         _connectionFactory = connectionFactory;
     }
@@ -96,14 +96,15 @@ public class TaskRepository : ITaskRepository
         return rowsAffected > 0;
     }
 
-    public async Task<bool> DeleteAsync(int id)
+    public async Task<bool> DeleteAsync(int id, int userId)
     {
         await using var connection = _connectionFactory.CreateConnection();
         await connection.OpenAsync();
 
-        const string sql = "DELETE FROM tasks WHERE id = @id";
+        const string sql = "DELETE FROM tasks WHERE id = @id AND user_id = @user_id";
         await using var command = new Npgsql.NpgsqlCommand(sql, connection);
         command.Parameters.AddWithValue("@id", id);
+        command.Parameters.AddWithValue("@user_id", userId);
 
         var rowsAffected = await command.ExecuteNonQueryAsync();
         return rowsAffected > 0;

@@ -226,14 +226,14 @@ public class TaskServiceTests
         var task = new TaskItem { Id = taskId, UserId = userId };
 
         _taskRepoMock.Setup(x => x.GetByIdAsync(taskId)).ReturnsAsync(task);
-        _taskRepoMock.Setup(x => x.DeleteAsync(taskId)).ReturnsAsync(true);
+        _taskRepoMock.Setup(x => x.DeleteAsync(taskId, userId)).ReturnsAsync(true);
 
         // Act
         var result = await _sut.DeleteAsync(taskId, userId);
 
         // Assert
         result.Should().BeTrue();
-        _taskRepoMock.Verify(x => x.DeleteAsync(taskId), Times.Once);
+        _taskRepoMock.Verify(x => x.DeleteAsync(taskId, userId), Times.Once);
     }
 
     [Fact]
@@ -250,7 +250,7 @@ public class TaskServiceTests
 
         // Assert
         result.Should().BeFalse();
-        _taskRepoMock.Verify(x => x.DeleteAsync(It.IsAny<int>()), Times.Never);
+        _taskRepoMock.Verify(x => x.DeleteAsync(It.IsAny<int>(), It.IsAny<int>()), Times.Never);
     }
 
     [Fact]

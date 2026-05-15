@@ -28,11 +28,12 @@ namespace TechExercise.WebApi.Auth
                 new Claim(ClaimTypes.Name, user.Name)
             };
 
+            var expirationHours = _configuration.GetValue<int>("Jwt:ExpirationInHours", 8);
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(8),
+                expires: DateTime.UtcNow.AddHours(expirationHours),
                 signingCredentials: credentials
             );
 
