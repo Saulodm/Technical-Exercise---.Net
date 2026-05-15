@@ -210,21 +210,29 @@ Use the token as `Bearer {token}` in subsequent requests.
 
 ```
 backend/
-├── TechExercise.slnx                          # Solution file
-├── docker-compose.yml                         # PostgreSQL container
+├── TechExercise.slnx                                  # Solution file
+├── docker-compose.yml                                 # PostgreSQL container
 ├── database/
-│   └── init.sql                               # Database initialization script
-├── TechExercise.WebApi/                       # Main API project
-│   ├── Program.cs                             # Host configuration & DI
-│   ├── appsettings.json                       # Base configuration
-│   ├── appsettings.Development.json            # Development overrides
-│   ├── TechExercise.WebApi.csproj             # Project file
-│   ├── Auth/
-│   │   ├── IJwtService.cs                     # JWT generation contract
-│   │   └── JwtService.cs                      # JWT token generation
-│   ├── Controllers/
-│   │   ├── AuthController.cs                  # Register / Login endpoints
-│   │   └── TasksController.cs                 # CRUD endpoints
+│   └── init.sql                                       # Database initialization script
+│
+├── TechExercise.Domain/                               # ⭐ Domain layer (zero dependencies)
+│   ├── TechExercise.Domain.csproj
+│   └── Entities/
+│       ├── User.cs                                    # User entity (includes PasswordHash)
+│       └── TaskItem.cs                                # Task entity
+│
+├── TechExercise.Application/                          # ⭐ Application layer
+│   ├── TechExercise.Application.csproj                #   └── depends on Domain
+│   ├── Interfaces/
+│   │   ├── IAuthService.cs                            # Auth service contract
+│   │   ├── ITaskService.cs                            # Task service contract
+│   │   ├── IUserRepository.cs                         # User repository contract
+│   │   ├── ITaskRepository.cs                         # Task repository contract
+│   │   ├── IJwtService.cs                             # JWT generation contract
+│   │   └── IPasswordHasher.cs                         # Password hashing contract
+│   ├── Services/
+│   │   ├── AuthService.cs                             # Register / Login logic
+│   │   └── TaskService.cs                             # Task CRUD logic
 │   ├── DTOs/
 │   │   ├── Auth/
 │   │   │   ├── RegisterRequest.cs
@@ -234,20 +242,33 @@ backend/
 │   │       ├── CreateTaskRequest.cs
 │   │       ├── UpdateTaskRequest.cs
 │   │       └── TaskResponse.cs
+│   └── Exceptions/
+│       └── ConflictException.cs                       # 409 Conflict
+│
+├── TechExercise.Infrastructure/                       # ⭐ Infrastructure layer
+│   ├── TechExercise.Infrastructure.csproj             #   └── depends on Application
 │   ├── Data/
-│   │   └── DbConnectionFactory.cs             # Npgsql connection factory
-│   ├── Middleware/
-│   │   └── ExceptionHandlingMiddleware.cs      # Global error handling
-│   ├── Models/
-│   │   ├── User.cs
-│   │   └── TaskItem.cs
-│   ├── Repositories/
-│   │   ├── IUserRepository.cs / UserRepository.cs
-│   │   └── ITaskRepository.cs / TaskRepository.cs
-│   └── Services/
-│       ├── IAuthService.cs / AuthService.cs
-│       └── ITaskService.cs / TaskService.cs
-└── TechExercise.Tests/                        # Test project
+│   │   ├── IDbConnectionFactory.cs                    # Connection factory contract
+│   │   └── DbConnectionFactory.cs                     # Npgsql implementation
+│   ├── Auth/
+│   │   ├── JwtService.cs                              # JWT token generation
+│   │   └── BCryptPasswordHasher.cs                    # BCrypt hashing
+│   └── Repositories/
+│       ├── UserRepository.cs                          # User data access
+│       └── TaskRepository.cs                          # Task data access
+│
+├── TechExercise.WebApi/                               # ⭐ Web API / Composition Root
+│   ├── TechExercise.WebApi.csproj                     #   └── depends on Infrastructure
+│   ├── Program.cs                                     # Host, DI, middleware pipeline
+│   ├── appsettings.json                               # Base configuration
+│   ├── appsettings.Development.json                   # Development overrides
+│   ├── Controllers/
+│   │   ├── AuthController.cs                          # Register / Login endpoints
+│   │   └── TasksController.cs                         # Task CRUD endpoints
+│   └── Middleware/
+│       └── ExceptionHandlingMiddleware.cs              # Global error handling
+│
+└── TechExercise.Tests/                                # ⭐ Test project
     ├── TechExercise.Tests.csproj
     ├── Controllers/
     │   ├── AuthControllerTests.cs
@@ -260,7 +281,7 @@ backend/
     ├── Validation/
     │   └── DtoValidationTests.cs
     └── Repositories/
-        ├── DatabaseFixture.cs                  # Testcontainers PostgreSQL lifecycle
+        ├── DatabaseFixture.cs                          # Testcontainers PostgreSQL lifecycle
         ├── UserRepositoryTests.cs
         └── TaskRepositoryTests.cs
 ```
@@ -269,10 +290,34 @@ backend/
 
 ## Architecture Principles
 
-- **Simple layered**: Controller -> Service -> Repository -> Database
+This project follows **Clean Architecture** with strict dependency rules:
+
+```
+┌──────────────────────────────────────────┐
+│           TechExercise.WebApi            │  Controllers, Middleware, DI
+│              (Composition Root)          │
+├──────────────────────────────────────────┤
+│       TechExercise.Infrastructure        │  DB, JWT, BCrypt implementations
+│                                         │
+├──────────────────────────────────────────┤
+│        TechExercise.Application          │  Interfaces, Services, DTOs
+│                                         │
+├──────────────────────────────────────────┤
+│          TechExercise.Domain             │  Entities only (zero deps)
+└──────────────────────────────────────────┘
+```
+
+**Dependency direction**: `WebApi → Infrastructure → Application → Domain` (one-way only)
+
+- **Domain**: Pure entities only. Zero external dependencies.
+- **Application**: Business logic, service contracts, DTOs, custom exceptions. Only depends on Domain + `Microsoft.Extensions.Logging.Abstractions`.
+- **Infrastructure**: All external concerns — database (`Npgsql`), authentication (`BCrypt`, `JWT`), configuration. Implements Application interfaces.
+- **WebApi**: Composition root. Registers DI, hosts controllers, configures middleware pipeline. No business logic.
+
+**Key design decisions:**
 - **Pure ADO.NET**: No EF Core, no Dapper, no ORM abstractions
 - **Manual DTO mapping**: Explicit, debuggable, no AutoMapper
-- **JWT Bearer auth**: BCrypt password hashing, stateless tokens
+- **JWT Bearer auth**: BCrypt password hashing via `IPasswordHasher` abstraction, stateless tokens
 - **Global error handling**: Middleware catches and normalizes all exceptions
 - **Input validation**: Data Annotations on request DTOs
 - **User-scoped tasks**: Each user only sees and manages their own tasks
