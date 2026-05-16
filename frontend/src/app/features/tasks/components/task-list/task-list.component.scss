@@ -1,0 +1,119 @@
+.task-list-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 16px;
+  padding-bottom: 80px;
+  box-sizing: border-box;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  &__table-container {
+    overflow-x: auto;
+
+    @media (max-width: 599px) {
+      display: none;
+    }
+  }
+
+  &__cards {
+    display: none;
+
+    @media (max-width: 599px) {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+  }
+
+  &__fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+
+    @media (min-width: 600px) {
+      display: none;
+    }
+  }
+}
+
+.task-table {
+  width: 100%;
+
+  &__title-cell {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__title {
+    font-weight: 500;
+  }
+
+  &__description {
+    font-size: 0.8rem;
+    color: var(--mat-sys-on-surface-variant);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 250px;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 4px;
+  }
+}
+
+.task-card {
+  mat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    mat-chip {
+      flex-shrink: 0;
+    }
+  }
+
+  mat-card-title {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  &__description {
+    font-size: 0.875rem;
+    color: var(--mat-sys-on-surface-variant);
+    margin: 8px 0;
+  }
+
+  &__due-date {
+    font-size: 0.8rem;
+    margin: 8px 0 0;
+  }
+}
+
+// Status chip styles
+.status-pending {
+  --mat-chip-container-color: var(--mat-sys-error-container);
+  --mat-chip-label-text-color: var(--mat-sys-on-error-container);
+}
+
+.status-in-progress {
+  --mat-chip-container-color: var(--mat-sys-secondary-container);
+  --mat-chip-label-text-color: var(--mat-sys-on-secondary-container);
+}
+
+.status-completed {
+  --mat-chip-container-color: var(--mat-sys-primary-container);
+  --mat-chip-label-text-color: var(--mat-sys-on-primary-container);
+}

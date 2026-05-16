@@ -1,0 +1,43 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  &__title {
+    margin-left: 8px;
+    font-weight: 500;
+  }
+
+  &__spacer {
+    flex: 1 1 auto;
+  }
+
+  &__home-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  &__user-info {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: 16px;
+    font-size: 0.875rem;
+
+    @media (max-width: 599px) {
+      display: none;
+    }
+  }
+
+  &__desktop-btn {
+    @media (max-width: 599px) {
+      display: none;
+    }
+  }
+
+  &__mobile-btn {
+    @media (min-width: 600px) {
+      display: none;
+    }
+  }
+}

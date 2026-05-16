@@ -1,0 +1,63 @@
+<h2 mat-dialog-title>{{ isEditing() ? 'Edit Task' : 'New Task' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <mat-dialog-content>
+    @if (loading()) {
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    }
+
+    <div class="task-form">
+      <mat-form-field appearance="outline" class="task-form__field">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" placeholder="Enter task title" />
+        @if (title.hasError('required') && title.touched) {
+          <mat-error>Title is required</mat-error>
+        }
+        @if (title.hasError('maxlength')) {
+          <mat-error>Title must be at most 300 characters</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="task-form__field">
+        <mat-label>Description</mat-label>
+        <textarea
+          matInput
+          formControlName="description"
+          placeholder="Enter task description (optional)"
+          rows="3"
+        ></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="task-form__field">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          @for (s of statuses; track s.value) {
+            <mat-option [value]="s.value">{{ s.label }}</mat-option>
+          }
+        </mat-select>
+        @if (status.hasError('required') && status.touched) {
+          <mat-error>Status is required</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="task-form__field">
+        <mat-label>Due Date</mat-label>
+        <input matInput [matDatepicker]="picker" formControlName="dueDate" placeholder="Select due date" />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()" [disabled]="loading()">Cancel</button>
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="form.invalid || loading()"
+    >
+      {{ loading() ? 'Saving...' : isEditing() ? 'Update' : 'Create' }}
+    </button>
+  </mat-dialog-actions>
+</form>

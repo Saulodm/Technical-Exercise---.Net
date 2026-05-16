@@ -45,9 +45,9 @@ For production, override these values via environment variables or user secrets.
 dotnet run --project TechExercise.WebApi
 ```
 
-The API starts on `https://localhost:50348` (or the next available port).
+The API starts on `http://localhost:50349` (development) or `https://localhost:50348` (production).
 
-Swagger UI is available at `https://localhost:50348/Swagger`.
+Swagger UI is available at `http://localhost:50349/Swagger`.
 
 ---
 
@@ -137,25 +137,21 @@ dotnet build
 
 ## Demo Credentials
 
-After starting the API, register a user via the endpoint:
+The database initialization script (`database/init.sql`) includes seeded data for demo purposes. When the database is started fresh (via Docker or manually), the following user is created automatically:
+
+| Field      | Value                  |
+|------------|------------------------|
+| Username   | `admin`                |
+| Email      | `admin@example.com`    |
+| Password   | `password123`          |
+
+To verify the seeded user, login via the API:
 
 ```bash
-curl -X POST https://localhost:5001/api/auth/register \
+curl -X POST http://localhost:50349/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
-    "username": "demouser",
-    "email": "demo@example.com",
-    "password": "password123"
-  }'
-```
-
-Then login to obtain a JWT:
-
-```bash
-curl -X POST https://localhost:5001/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "demo@example.com",
+    "email": "admin@example.com",
     "password": "password123"
   }'
 ```
@@ -166,12 +162,23 @@ Response:
 {
   "idUser": 1,
   "token": "eyJhbGciOiJIUzI1NiIs...",
-  "username": "demouser",
-  "email": "demo@example.com"
+  "username": "admin",
+  "email": "admin@example.com"
 }
 ```
 
-Use the token as `Bearer {token}` in subsequent requests.
+Use the returned token as `Bearer {token}` in subsequent requests to protected endpoints.
+
+### Re-seeding
+
+If you need to reset the database with fresh seed data, stop the container, delete the volume, and start again:
+
+```bash
+docker compose down -v
+docker compose up -d
+```
+
+Or, if running PostgreSQL manually, run the init script again on an empty database.
 
 ---
 

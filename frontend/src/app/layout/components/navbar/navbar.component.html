@@ -1,0 +1,37 @@
+<mat-toolbar color="primary" class="navbar">
+  <button mat-icon-button routerLink="/tasks" class="navbar__home-link">
+    <mat-icon>checklist</mat-icon>
+  </button>
+  <span class="navbar__title">Task Manager</span>
+
+  @if (authService.isAuthenticated()) {
+    <span class="navbar__spacer"></span>
+
+    <!-- Desktop user info -->
+    <span class="navbar__user-info">
+      <mat-icon>account_circle</mat-icon>
+      <span>{{ authService.currentUser()?.username }}</span>
+    </span>
+
+    <!-- Desktop logout -->
+    <button mat-button class="navbar__desktop-btn" (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      Logout
+    </button>
+
+    <!-- Mobile menu -->
+    <button mat-icon-button [matMenuTriggerFor]="menu" class="navbar__mobile-btn">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item disabled>
+        <mat-icon>account_circle</mat-icon>
+        {{ authService.currentUser()?.username }}
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+    </mat-menu>
+  }
+</mat-toolbar>

@@ -1,0 +1,72 @@
+<div class="auth-page">
+  <mat-card class="auth-card">
+    <mat-card-header>
+      <mat-card-title>Sign In</mat-card-title>
+      <mat-card-subtitle>Welcome back! Enter your credentials.</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (errorMessage()) {
+        <div class="auth-card__error">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="auth-form">
+        <mat-form-field appearance="outline" class="auth-form__field">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="Enter your email" />
+          @if (email.hasError('required') && email.touched) {
+            <mat-error>Email is required</mat-error>
+          }
+          @if (email.hasError('email') && email.touched) {
+            <mat-error>Enter a valid email address</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="auth-form__field">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            [type]="hidePassword() ? 'password' : 'text'"
+            formControlName="password"
+            placeholder="Enter your password"
+          />
+          <button
+            mat-icon-button
+            matSuffix
+            type="button"
+            (click)="hidePassword.set(!hidePassword())"
+            [attr.aria-label]="'Toggle password visibility'"
+          >
+            <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (password.hasError('required') && password.touched) {
+            <mat-error>Password is required</mat-error>
+          }
+        </mat-form-field>
+
+        @if (loading()) {
+          <mat-progress-bar mode="indeterminate" class="auth-form__progress"></mat-progress-bar>
+        }
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="auth-form__submit"
+          [disabled]="form.invalid || loading()"
+        >
+          {{ loading() ? 'Signing in...' : 'Sign In' }}
+        </button>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <span class="auth-card__action-text">
+        Don't have an account?
+        <a routerLink="/register">Create one</a>
+      </span>
+    </mat-card-actions>
+  </mat-card>
+</div>
