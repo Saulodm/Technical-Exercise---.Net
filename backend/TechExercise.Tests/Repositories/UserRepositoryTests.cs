@@ -1,6 +1,5 @@
 using FluentAssertions;
 using TechExercise.Domain.Entities;
-using TechExercise.Infrastructure.Data;
 using TechExercise.Infrastructure.Repositories;
 
 namespace TechExercise.Tests.Repositories;
@@ -40,27 +39,7 @@ public class UserRepositoryTests : IClassFixture<DatabaseFixture>
         saved.Email.Should().Be("testuser@example.com");
     }
 
-    [Fact]
-    public async Task CreateAsync_ShouldUseNameAsUsername()
-    {
-        // Arrange
-        await _fixture.ResetTablesAsync();
-        var user = new User
-        {
-            Name = "unique_user_42",
-            Email = "unique42@example.com",
-            PasswordHash = "hash"
-        };
-
-        // Act
-        var id = await _repo.CreateAsync(user);
-
-        // Assert - verify via GetByUsername that Name maps to username column
-        var byUsername = await _repo.GetByUsernameAsync("unique_user_42");
-        byUsername.Should().NotBeNull();
-        byUsername!.Id.Should().Be(id);
-        byUsername.Name.Should().Be("unique_user_42");
-    }
+    
 
     [Fact]
     public async Task GetByIdAsync_ShouldReturnUser_WhenExists()
@@ -122,38 +101,6 @@ public class UserRepositoryTests : IClassFixture<DatabaseFixture>
     {
         // Act
         var result = await _repo.GetByEmailAsync("nonexistent@example.com");
-
-        // Assert
-        result.Should().BeNull();
-    }
-
-    [Fact]
-    public async Task GetByUsernameAsync_ShouldReturnUser_WhenExists()
-    {
-        // Arrange
-        await _fixture.ResetTablesAsync();
-        var user = new User
-        {
-            Name = "username_lookup",
-            Email = "username_test@example.com",
-            PasswordHash = "hash"
-        };
-        var id = await _repo.CreateAsync(user);
-
-        // Act
-        var result = await _repo.GetByUsernameAsync("username_lookup");
-
-        // Assert
-        result.Should().NotBeNull();
-        result!.Id.Should().Be(id);
-        result.Name.Should().Be("username_lookup");
-    }
-
-    [Fact]
-    public async Task GetByUsernameAsync_ShouldReturnNull_WhenNotExists()
-    {
-        // Act
-        var result = await _repo.GetByUsernameAsync("unknown_user");
 
         // Assert
         result.Should().BeNull();

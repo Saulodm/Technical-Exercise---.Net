@@ -49,24 +49,7 @@ public class UserRepository : IUserRepository
         return null;
     }
 
-    public async Task<User?> GetByUsernameAsync(string username)
-    {
-        await using var connection = _connectionFactory.CreateConnection();
-        await connection.OpenAsync();
-
-        const string sql = "SELECT id, username, email, password_hash, created_at, updated_at FROM users WHERE username = @username";
-        await using var command = new Npgsql.NpgsqlCommand(sql, connection);
-        command.Parameters.AddWithValue("@username", username);
-
-        await using var reader = await command.ExecuteReaderAsync();
-        if (await reader.ReadAsync())
-        {
-            return MapUser(reader);
-        }
-
-        return null;
-    }
-
+  
     public async Task<int> CreateAsync(User user)
     {
         await using var connection = _connectionFactory.CreateConnection();
